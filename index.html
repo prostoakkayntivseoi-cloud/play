@@ -2,27 +2,112 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Panda Gaming</title>
+<title>Крестики-нолики</title>
 
 <style>
 body{
-    margin:0;
-    height:100vh;
+    font-family: Arial, sans-serif;
+    text-align:center;
+    background:#111;
+    color:white;
+}
+
+h1{
+    margin-top:20px;
+}
+
+#board{
+    width:300px;
+    margin:20px auto;
+    display:grid;
+    grid-template-columns:repeat(3,100px);
+}
+
+.cell{
+    width:100px;
+    height:100px;
+    border:2px solid white;
+    font-size:60px;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:#000;
-}
-
-.logo{
-    width:300px;
+    cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<img src="logo.png" class="logo">
+<h1>Крестики-нолики</h1>
+
+<div id="board">
+<div class="cell" onclick="move(0)"></div>
+<div class="cell" onclick="move(1)"></div>
+<div class="cell" onclick="move(2)"></div>
+<div class="cell" onclick="move(3)"></div>
+<div class="cell" onclick="move(4)"></div>
+<div class="cell" onclick="move(5)"></div>
+<div class="cell" onclick="move(6)"></div>
+<div class="cell" onclick="move(7)"></div>
+<div class="cell" onclick="move(8)"></div>
+</div>
+
+<h2 id="status">Твой ход (X)</h2>
+
+<script>
+let board=["","","","","","","","",""];
+let cells=document.querySelectorAll(".cell");
+
+function move(i){
+    if(board[i]!="") return;
+
+    board[i]="X";
+    cells[i].innerText="X";
+
+    if(checkWin("X")){
+        document.getElementById("status").innerText="Ты победил!";
+        return;
+    }
+
+    botMove();
+}
+
+function botMove(){
+    let free=[];
+
+    for(let i=0;i<9;i++){
+        if(board[i]=="") free.push(i);
+    }
+
+    if(free.length==0){
+        document.getElementById("status").innerText="Ничья!";
+        return;
+    }
+
+    let r=free[Math.floor(Math.random()*free.length)];
+
+    board[r]="O";
+    cells[r].innerText="O";
+
+    if(checkWin("O")){
+        document.getElementById("status").innerText="Бот победил!";
+    }
+}
+
+function checkWin(p){
+    let w=[
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+    ];
+
+    return w.some(c =>
+        board[c[0]]===p &&
+        board[c[1]]===p &&
+        board[c[2]]===p
+    );
+}
+</script>
 
 </body>
 </html>
